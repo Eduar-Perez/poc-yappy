@@ -24,6 +24,7 @@ public class UserYappyResponseDTO {
 	private Date paymentDate;
 	private String ipnUrl;
 	private String domain;
+	private String status;
 
 	//Billing
 	private String discount;

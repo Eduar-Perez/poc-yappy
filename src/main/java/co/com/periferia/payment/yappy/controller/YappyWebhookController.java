@@ -8,12 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.com.periferia.payment.yappy.service.TxService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RequiredArgsConstructor
 public class YappyWebhookController {
+
+	private final TxService txService;
 
 	@GetMapping("/yappy-webhook")
 	public ResponseEntity<String> recibirConfirmacionPago(
@@ -24,11 +29,14 @@ public class YappyWebhookController {
 		log.info("Webhook recibido - orderId: {}, status: {}", orderId, status);
 
 		try {
-			TimeUnit.SECONDS.sleep(30);
+			TimeUnit.SECONDS.sleep(5);
 		} catch (Exception e) {
 			Thread.currentThread().interrupt();
 			log.error("Error en delay del webhook", e);
 		}
+
+		txService.updateTx(orderId, status);
+
 		if ("SUCCESS".equalsIgnoreCase(status)) {
 			log.info("Pago confirmado para orden {}", orderId);
 			return ResponseEntity.ok("OK");

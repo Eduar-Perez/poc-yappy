@@ -30,6 +30,7 @@ public class CustomerYappyMapper {
 			dto.setPaymentDate(customer.getTx().getPaymentDate());
 			dto.setIpnUrl(customer.getTx().getIpnUrl());
 			dto.setDomain(customer.getTx().getDomain());
+			dto.setStatus(customer.getTx().getStatus());
 
 			if (customer.getTx().getBilling() != null) {
 				dto.setDiscount(customer.getTx().getBilling().getDiscount());

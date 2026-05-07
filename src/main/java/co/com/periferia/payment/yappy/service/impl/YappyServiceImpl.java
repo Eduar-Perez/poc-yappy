@@ -68,7 +68,7 @@ public class YappyServiceImpl implements YappyService {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode json = mapper.readTree(response.body());
 
-			return json.get("token").asText();
+			return json.get("token").asString();
 		} else {
 			throw new RuntimeException("Error en validación: " + response.statusCode());
 		}
