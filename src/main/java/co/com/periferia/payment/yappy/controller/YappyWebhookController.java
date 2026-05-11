@@ -27,14 +27,6 @@ public class YappyWebhookController {
 			@RequestParam("hash") String hash) {
 
 		log.info("Webhook recibido - orderId: {}, status: {}", orderId, status);
-
-		try {
-			TimeUnit.SECONDS.sleep(0);
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
-			log.error("Error en delay del webhook", e);
-		}
-
 		txService.updateTx(orderId, status);
 
 		if ("SUCCESS".equalsIgnoreCase(status) || "E".equalsIgnoreCase(status)) {
