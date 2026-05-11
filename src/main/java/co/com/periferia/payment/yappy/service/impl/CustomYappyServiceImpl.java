@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import co.com.periferia.payment.yappy.dto.CustomerYappyMapper;
-import co.com.periferia.payment.yappy.dto.response.UserYappyResponseDTO;
+import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
 import co.com.periferia.payment.yappy.entity.CustomerYampyEntity;
+import co.com.periferia.payment.yappy.mapper.CustomerYappyMapper;
 import co.com.periferia.payment.yappy.repository.CustomerYappyRepository;
 import co.com.periferia.payment.yappy.service.CustomYappyService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomYappyServiceImpl implements CustomYappyService{
 
 	private final CustomerYappyRepository customerYappyRepository;
+	private final CustomerYappyMapper customerYappyMapper = new CustomerYappyMapper();
 
 	@Override
-	public UserYappyResponseDTO getCustomer(String cc) {
+	public CustomerPaymentResponseDTO getCustomer(String cc) {
 		log.info("Iniciando consulta del cliente. CC={}", cc);
 
 		try {
@@ -28,16 +29,14 @@ public class CustomYappyServiceImpl implements CustomYappyService{
 
 			if (customerOpt.isEmpty()) {
 				log.warn("No se encontró el cliente con CC={}", cc);
-
-				throw new RuntimeException("Cliente no encontrado: " + cc);
+				return new CustomerPaymentResponseDTO();
 			}
 
 			CustomerYampyEntity customer = customerOpt.get();
 
-			log.info("Cliente encontrado correctamente. CC={}, Nombre={}", customer.getCc(),customer.getName());
+			log.info("Cliente encontrado correctamente. {}", customer.getCc());
 
-			UserYappyResponseDTO response = CustomerYappyMapper.toDto(customer);
-
+			CustomerPaymentResponseDTO response = customerYappyMapper.toDto(customer);
 			log.info("Transformación a DTO completada exitosamente para CC={}", cc);
 
 			return response;

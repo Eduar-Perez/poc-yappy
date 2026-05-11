@@ -29,7 +29,7 @@ public class YappyWebhookController {
 		log.info("Webhook recibido - orderId: {}, status: {}", orderId, status);
 
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(1);
 		} catch (Exception e) {
 			Thread.currentThread().interrupt();
 			log.error("Error en delay del webhook", e);
@@ -37,12 +37,12 @@ public class YappyWebhookController {
 
 		txService.updateTx(orderId, status);
 
-		if ("SUCCESS".equalsIgnoreCase(status)) {
+		if ("SUCCESS".equalsIgnoreCase(status) || "E".equalsIgnoreCase(status)) {
 			log.info("Pago confirmado para orden {}", orderId);
 			return ResponseEntity.ok("OK");
 		} else {
 			log.warn("Pago no exitoso para orden {}", orderId);
-			return ResponseEntity.badRequest().body("Estado no exitoso");
+			return ResponseEntity.badRequest().body("Estado no exitoso: " + status);
 		}
 
 	}

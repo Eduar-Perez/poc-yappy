@@ -1,9 +1,9 @@
 package co.com.periferia.payment.yappy.service;
 
-import co.com.periferia.payment.yappy.dto.response.UserYappyResponseDTO;
+import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
 
 public interface CustomYappyService {
 
-	UserYappyResponseDTO getCustomer(String cc);
+	CustomerPaymentResponseDTO getCustomer(String cc);
 
 }

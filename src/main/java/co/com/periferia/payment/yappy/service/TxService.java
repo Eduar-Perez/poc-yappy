@@ -1,10 +1,12 @@
 package co.com.periferia.payment.yappy.service;
 
-import co.com.periferia.payment.yappy.dto.response.TxResponseDTO;
+import co.com.periferia.payment.yappy.dto.TxDTO;
 
 public interface TxService {
 
-	TxResponseDTO getTransact(String orderId);
+	TxDTO getTransact(String orderId);
 	void updateTx(String orderId, String status);
+	void createTx(String cc, String orderId, double total);
+	String createOrderId();
 
 }

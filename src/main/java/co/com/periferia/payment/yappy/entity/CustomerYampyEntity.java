@@ -1,13 +1,17 @@
 package co.com.periferia.payment.yappy.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "customer", schema = "public")
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class CustomerYampyEntity {
 
     @Id
@@ -26,6 +30,6 @@ public class CustomerYampyEntity {
     @Column(name = "document_type")
     private String documentType;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private TxYampyEntity tx;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TxYampyEntity> tx;
 }

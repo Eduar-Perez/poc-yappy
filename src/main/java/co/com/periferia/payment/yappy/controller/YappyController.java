@@ -28,7 +28,7 @@ public class YappyController {
 		log.info("Ingresa a crear orden en el controlador");
 
 		String token = yappyServiceImpl.getAutorizathionToken();
-		String response = yappyServiceImpl.createOrdenPayment(token, request.getOrderId(), request.getTotal());
+		String response = yappyServiceImpl.createOrdenPayment(token, request.getTotal(), request.getCc());
 
 		return ResponseEntity.ok(response);
 	}

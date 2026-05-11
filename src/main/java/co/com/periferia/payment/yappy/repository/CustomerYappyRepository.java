@@ -13,8 +13,8 @@ import co.com.periferia.payment.yappy.entity.CustomerYampyEntity;
 public interface CustomerYappyRepository extends JpaRepository<CustomerYampyEntity, String> {
 
 	@Query(value = "SELECT c FROM CustomerYampyEntity c "
-			+ "INNER JOIN FETCH c.tx t "
-			+ "INNER JOIN FETCH t.billing b "
+			+ "LEFT JOIN FETCH c.tx t "
+			+ "LEFT JOIN FETCH t.billing b "
 			+ "WHERE c.cc = :cc")
 	Optional<CustomerYampyEntity> getCustomer(@Param("cc") String cc);
 }

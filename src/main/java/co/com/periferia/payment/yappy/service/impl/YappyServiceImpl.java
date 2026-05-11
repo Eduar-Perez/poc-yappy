@@ -1,5 +1,6 @@
 package co.com.periferia.payment.yappy.service.impl;
 
+import co.com.periferia.payment.yappy.repository.TxRepository;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,8 +11,10 @@ import java.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import co.com.periferia.payment.yappy.service.TxService;
 import co.com.periferia.payment.yappy.service.YappyService;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JsonNode;
@@ -22,7 +25,11 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class YappyServiceImpl implements YappyService {
+
+	private final TxRepository txRepository;
+	private final TxService txService;
 
 	@Value("${yappy.merchant-id}")
 	private String merchantID;
@@ -41,6 +48,9 @@ public class YappyServiceImpl implements YappyService {
 
 	@Value("${yappy.webhook-url}")
 	private String webHookUrl;
+
+	@Value("${yappy.domain}")
+	private String domain;
 
 	@Override
 	public String getAutorizathionToken() throws IOException, InterruptedException {
@@ -76,8 +86,9 @@ public class YappyServiceImpl implements YappyService {
 	}
 
 	@Override
-	public String createOrdenPayment(String token, String orderId, double total) throws IOException, InterruptedException {
+	public String createOrdenPayment(String token, double total, String cc) throws IOException, InterruptedException {
 		log.info("Ingresa al servicio de crear orden de pago en el service");
+		String orderId = "ORDER-" + txService.createOrderId();
 
 		String requestBody = String.format("{\"orderId\": \"%s\", \"total\": %.2f, \"currency\": "
 				+ "\"USD\",\"webhookUrl\": \"%s\"}", orderId, total, webHookUrl);
@@ -96,6 +107,9 @@ public class YappyServiceImpl implements YappyService {
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
+			
+			txService.createTx(cc, orderId, total);
+
 			return response.body();
 		} else {
 			throw new RuntimeException("Error al crear orden: " +

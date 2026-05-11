@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tx", schema = "public")
@@ -16,25 +16,19 @@ public class TxYampyEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "merchant_id")
-	private String merchantid;
-
 	@Column(name = "order_id")
 	private String orderId;
 
 	@Column(name = "payment_date")
-	private Date paymentDate;
+	private LocalDateTime paymentDate;
 
 	@Column(name = "ipn_url")
 	private String ipnUrl;
 
-	@Column(name = "domain")
-	private String domain;
-
 	@Column(name = "status")
 	private String status;
 
-	@OneToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_cc", referencedColumnName = "cc")
 	private CustomerYampyEntity customer;
 
