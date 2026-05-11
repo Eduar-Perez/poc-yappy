@@ -19,9 +19,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
 
 @Service
 @Slf4j
@@ -62,6 +59,7 @@ public class YappyServiceImpl implements YappyService {
 		String requestBody = 
 				String.format("{\"merchantId\":\"%s\", \"requestDate\":%d}", merchantID, epochTime);
 
+		log.info("Se inicia consumo de API yappy de crear token para la sesión");
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + endpointToken))
 				.header("Content-Type", "application/json")
@@ -75,6 +73,7 @@ public class YappyServiceImpl implements YappyService {
 				.build();
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		log.info("Se termina consumo de API yappy de crear token para la sesión");
 
 		if(response.statusCode() == 200) {
 			ObjectMapper mapper = new ObjectMapper();
@@ -97,6 +96,7 @@ public class YappyServiceImpl implements YappyService {
 
 		log.info(requestBody);
 
+		log.info("Se inicia consumo de API yappy de crear la orden");
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + endpointOrder))
 				.header("Content-Type","application/json")
@@ -109,11 +109,12 @@ public class YappyServiceImpl implements YappyService {
 				.build();
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		log.info("Se termina consumo de API yappy de crear la orden");
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
 
 			txService.createTx(cc, orderId, total);
-			
+
 			ObjectMapper mapper = new ObjectMapper();
 
 			JsonNode jsonNode = mapper.readTree(response.body());

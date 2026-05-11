@@ -13,4 +13,6 @@ public class TxDTO {
 	private LocalDateTime paymentDate;
 	private String ipnUrl;
 	private String status;
+	private double payment;
+	
 }

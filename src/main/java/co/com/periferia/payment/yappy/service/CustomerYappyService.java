@@ -1,9 +1,13 @@
 package co.com.periferia.payment.yappy.service;
 
-import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
+import java.util.List;
 
-public interface CustomYappyService {
+import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
+import co.com.periferia.payment.yappy.entity.CustomerYampyEntity;
+
+public interface CustomerYappyService {
 
 	CustomerPaymentResponseDTO getCustomer(String cc);
+	List<CustomerYampyEntity> getdataUserAdmin();
 
 }

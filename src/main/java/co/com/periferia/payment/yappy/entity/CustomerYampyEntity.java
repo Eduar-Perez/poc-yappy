@@ -29,6 +29,9 @@ public class CustomerYampyEntity {
 
     @Column(name = "document_type")
     private String documentType;
+    
+    @Column(name = "role")
+    private String role;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TxYampyEntity> tx;

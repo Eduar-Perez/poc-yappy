@@ -1,5 +1,7 @@
 package co.com.periferia.payment.yappy.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -8,14 +10,14 @@ import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
 import co.com.periferia.payment.yappy.entity.CustomerYampyEntity;
 import co.com.periferia.payment.yappy.mapper.CustomerYappyMapper;
 import co.com.periferia.payment.yappy.repository.CustomerYappyRepository;
-import co.com.periferia.payment.yappy.service.CustomYappyService;
+import co.com.periferia.payment.yappy.service.CustomerYappyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CustomYappyServiceImpl implements CustomYappyService{
+public class CustomYappyServiceImpl implements CustomerYappyService {
 
 	private final CustomerYappyRepository customerYappyRepository;
 	private final CustomerYappyMapper customerYappyMapper = new CustomerYappyMapper();
@@ -46,6 +48,18 @@ public class CustomYappyServiceImpl implements CustomYappyService{
 
 			throw new RuntimeException("Error al obtener la información del cliente: " + cc, e);
 		}
+	}
+
+	@Override
+	public List<CustomerYampyEntity> getdataUserAdmin() {
+		log.info("Iniciando consulta de datos para administrador total");
+
+		List<CustomerYampyEntity> allDataTx = new ArrayList<>();
+		allDataTx = customerYappyRepository.getAllUsers().get();
+
+		log.info("Se consulta los datos para administrador total");
+
+		return allDataTx;
 	}
 
 }
