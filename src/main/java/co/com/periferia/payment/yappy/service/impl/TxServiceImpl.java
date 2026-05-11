@@ -75,6 +75,7 @@ public class TxServiceImpl implements TxService {
 	}
 
 	@Override
+	@Transactional
 	public void updateTx(String orderId, String status) {
 		log.info("Ingresa al servicio de actualizar transacción en el service: con orderId {}", orderId);
 
