@@ -29,7 +29,7 @@ public class YappyWebhookController {
 		log.info("Webhook recibido - orderId: {}, status: {}", orderId, status);
 
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(0);
 		} catch (Exception e) {
 			Thread.currentThread().interrupt();
 			log.error("Error en delay del webhook", e);

@@ -17,8 +17,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 
 @Service
@@ -78,7 +80,7 @@ public class YappyServiceImpl implements YappyService {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode json = mapper.readTree(response.body());
 
-			return json.get("token").asString();
+			return json.get("token").asText();
 		} else {
 			throw new RuntimeException("Error en validación: " + response.statusCode());
 		}
@@ -92,6 +94,8 @@ public class YappyServiceImpl implements YappyService {
 
 		String requestBody = String.format("{\"orderId\": \"%s\", \"total\": %.2f, \"currency\": "
 				+ "\"USD\",\"webhookUrl\": \"%s\"}", orderId, total, webHookUrl);
+
+		log.info(requestBody);
 
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + endpointOrder))
@@ -107,11 +111,18 @@ public class YappyServiceImpl implements YappyService {
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
-			
-			txService.createTx(cc, orderId, total);
 
-			return response.body();
+			txService.createTx(cc, orderId, total);
+			
+			ObjectMapper mapper = new ObjectMapper();
+
+			JsonNode jsonNode = mapper.readTree(response.body());
+
+			((com.fasterxml.jackson.databind.node.ObjectNode) jsonNode).put("orderId", orderId);
+
+			return mapper.writeValueAsString(jsonNode);
 		} else {
+
 			throw new RuntimeException("Error al crear orden: " +
 					response.statusCode());
 		}
