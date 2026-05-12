@@ -21,6 +21,8 @@ public class TxYappyMapper {
 		dto.setIpnUrl(entity.getIpnUrl());
 		dto.setStatus(entity.getStatus());
 		dto.setPayment(entity.getBilling().getTotal());
+		dto.setDescription(entity.getDescription());
+		dto.setPaymentMeans(entity.getPaymentMeans());
 
 		return dto;
 	}

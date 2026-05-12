@@ -14,5 +14,7 @@ public class TxDTO {
 	private String ipnUrl;
 	private String status;
 	private double payment;
+	private String description;
+	private String paymentMeans;
 	
 }

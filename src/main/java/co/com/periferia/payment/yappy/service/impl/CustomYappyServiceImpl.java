@@ -31,7 +31,7 @@ public class CustomYappyServiceImpl implements CustomerYappyService {
 
 			if (customerOpt.isEmpty()) {
 				log.warn("No se encontró el cliente con CC={}", cc);
-				return new CustomerPaymentResponseDTO();
+				throw new Exception("El usuario ingresado no se encuentra registrado con CC: {}" + cc);
 			}
 
 			CustomerYampyEntity customer = customerOpt.get();

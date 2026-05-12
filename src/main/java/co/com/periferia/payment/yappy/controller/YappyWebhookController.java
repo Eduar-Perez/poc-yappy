@@ -1,6 +1,5 @@
 package co.com.periferia.payment.yappy.controller;
 
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

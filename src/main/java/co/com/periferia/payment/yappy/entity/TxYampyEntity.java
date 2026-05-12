@@ -27,6 +27,12 @@ public class TxYampyEntity {
 
 	@Column(name = "status")
 	private String status;
+	
+	@Column(name = "description")
+	private String description;
+	
+	@Column(name = "payment_means")
+	private String paymentMeans;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_cc", referencedColumnName = "cc")

@@ -37,7 +37,7 @@ public class TxServiceImpl implements TxService {
 
 	@Override
 	@Transactional
-	public void createTx(String cc, String orderId, double total) {
+	public void createTx(String cc, String orderId, double total, String description, String paymentMeans) throws Exception {
 		log.info("Se inicia proceso de crear tx [{}]", cc);
 
 		CustomerYampyEntity customer = customerYappyRepository
@@ -51,6 +51,8 @@ public class TxServiceImpl implements TxService {
 		tx.setIpnUrl(ipnUrl);
 		tx.setCustomer(customer);
 		tx.setStatus("PROCESS");
+		tx.setDescription(description);
+		tx.setPaymentMeans(paymentMeans);
 
 		BillingEntity billing = calculeBilling(total, billingService.getLastBilling(cc));
 		tx.setBilling(billing);
@@ -99,17 +101,22 @@ public class TxServiceImpl implements TxService {
 
 	}
 
-	private BillingEntity calculeBilling(double total, BillingEntity billingEntity) {
+	private BillingEntity calculeBilling(double total, BillingEntity billingEntity) throws Exception {
 		BillingEntity billing = new BillingEntity();
+		if(total > billingEntity.getTotal())
+			throw new Exception("No es pisoble crear la orden, el monto a pagar excede el total");
+
 
 		double previousTotal = billingEntity != null ? billingEntity.getTotal() : 0;
 
 		billing.setSubtotal(total);
-		billing.setTaxes(total * 0.19);
+		billing.setTaxes(total * 0.19);	
 		billing.setTotal(previousTotal - total);
 		billing.setDiscount(billingEntity.getDiscount());
 		billing.setValueMin(billingEntity.getValueMin());
 		billing.setValueMax(billingEntity.getValueMax());
+
+
 
 		return billing;
 

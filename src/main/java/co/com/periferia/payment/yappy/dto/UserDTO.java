@@ -17,6 +17,7 @@ public class UserDTO {
 	private String phone;
 	private String cc;
 	private String documentType;
+	private String role;
 	private TxDTO tx;
 	private BillingDTO billingResponseDTO;
 

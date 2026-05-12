@@ -11,5 +11,7 @@ public class PaymentRequestDTO {
 
 	private String cc;
 	private double total;
+	private String description;
+	private String paymentMeans;
 
 }

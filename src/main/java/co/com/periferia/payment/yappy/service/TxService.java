@@ -6,7 +6,7 @@ public interface TxService {
 
 	TxDTO getTransact(String orderId);
 	void updateTx(String orderId, String status);
-	void createTx(String cc, String orderId, double total);
+	void createTx(String cc, String orderId, double total, String description, String paymentMeans) throws Exception;
 	String createOrderId();
 
 }

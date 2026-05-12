@@ -6,6 +6,6 @@ import java.io.IOException;
 public interface YappyService {
 
 	String getAutorizathionToken() throws IOException, InterruptedException;
-	String createOrdenPayment(String token, double total, String cc) throws IOException, InterruptedException;
+	String createOrdenPayment(String token, double total, String cc, String description, String paymentsMeans) throws IOException, InterruptedException, Exception;
 
 }

@@ -42,20 +42,19 @@ public class ExcelReportService {
 		header.createCell(3).setCellValue("Email");
 		header.createCell(4).setCellValue("Telefono");
 
-		header.createCell(5).setCellValue("Id Transaccion");
-		header.createCell(6).setCellValue("Monto");
-		header.createCell(7).setCellValue("N° Orden");
-		header.createCell(8).setCellValue("Fecha");
+		header.createCell(5).setCellValue("Monto");
+		header.createCell(6).setCellValue("N° Orden");
+		header.createCell(7).setCellValue("Fecha");
 
 		int rowNum = 1;
 
 		CreationHelper createHelperMoney = workbook.getCreationHelper();
 		CellStyle dateStyle = workbook.createCellStyle();
 		dateStyle.setDataFormat(createHelperMoney.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss"));
-		
+
 		CreationHelper createHelper = workbook.getCreationHelper();
 		CellStyle currencyStyle = workbook.createCellStyle();
-		currencyStyle.setDataFormat(createHelper.createDataFormat().getFormat("$#,##0.00"));
+		currencyStyle.setDataFormat(createHelper.createDataFormat().getFormat("\"USD\" #,##0.00"));
 
 		for (CustomerYampyEntity customer : customers) {
 
@@ -72,7 +71,7 @@ public class ExcelReportService {
 					row.createCell(4).setCellValue(customer.getPhone());
 
 					row.createCell(5).setCellValue(tx.getId());
-					
+
 					Cell amountCell = row.createCell(6);
 					amountCell.setCellValue(tx.getBilling().getTotal());
 					amountCell.setCellStyle(currencyStyle);					

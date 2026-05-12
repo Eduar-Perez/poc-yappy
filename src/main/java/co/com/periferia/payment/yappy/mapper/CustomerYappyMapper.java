@@ -25,29 +25,30 @@ public class CustomerYappyMapper {
 		customerDto.setEmail(entity.getEmail());
 		customerDto.setPhone(entity.getPhone());
 		customerDto.setDocumentType(entity.getDocumentType());
+		customerDto.setRole(entity.getRole());
 
 		response.setCustomer(customerDto);
 
 		Optional<TxYampyEntity> lastTx = entity.getTx()
-                .stream()
-                .max(Comparator.comparing(TxYampyEntity::getPaymentDate));
+				.stream()
+				.max(Comparator.comparing(TxYampyEntity::getPaymentDate));
 
-        if (lastTx.isPresent()) {
+		if (lastTx.isPresent()) {
 
-            TxYampyEntity tx = lastTx.get();
+			TxYampyEntity tx = lastTx.get();
 
-            TxYappyMapper txMapper = new TxYappyMapper();
-            response.setTransaction(txMapper.toDto(tx));
+			TxYappyMapper txMapper = new TxYappyMapper();
+			response.setTransaction(txMapper.toDto(tx));
 
-            if (tx.getBilling() != null) {
+			if (tx.getBilling() != null) {
 
-                BillingMapper billingMapper = new BillingMapper();
+				BillingMapper billingMapper = new BillingMapper();
 
-                response.setBilling(
-                        billingMapper.toDto(tx.getBilling())
-                );
-            }
-        }
+				response.setBilling(
+						billingMapper.toDto(tx.getBilling())
+						);
+			}
+		}
 
 		return response;
 	}

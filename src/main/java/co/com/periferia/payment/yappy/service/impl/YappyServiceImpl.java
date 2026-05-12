@@ -87,14 +87,12 @@ public class YappyServiceImpl implements YappyService {
 	}
 
 	@Override
-	public String createOrdenPayment(String token, double total, String cc) throws IOException, InterruptedException {
+	public String createOrdenPayment(String token, double total, String cc, String description, String paymentsMeans) throws Exception {
 		log.info("Ingresa al servicio de crear orden de pago en el service");
 		String orderId = "ORDER-" + txService.createOrderId();
 
 		String requestBody = String.format("{\"orderId\": \"%s\", \"total\": %.2f, \"currency\": "
 				+ "\"USD\",\"webhookUrl\": \"%s\"}", orderId, total, webHookUrl);
-
-		log.info(requestBody);
 
 		log.info("Se inicia consumo de API yappy de crear la orden");
 		HttpRequest request = HttpRequest.newBuilder()
@@ -113,7 +111,7 @@ public class YappyServiceImpl implements YappyService {
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
 
-			txService.createTx(cc, orderId, total);
+			txService.createTx(cc, orderId, total, description, paymentsMeans);
 
 			ObjectMapper mapper = new ObjectMapper();
 
