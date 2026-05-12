@@ -27,6 +27,7 @@ public class ExcelReportService {
 	private final CustomerYappyService customerYappyService;
 
 	public byte[] generateExcel() throws IOException {
+
 		log.info("Se inicia proceso de creación de reporte");
 
 		List<CustomerYampyEntity> customers = customerYappyService.getdataUserAdmin();
@@ -41,18 +42,17 @@ public class ExcelReportService {
 		header.createCell(2).setCellValue("Nombre");
 		header.createCell(3).setCellValue("Email");
 		header.createCell(4).setCellValue("Telefono");
-
 		header.createCell(5).setCellValue("Monto");
 		header.createCell(6).setCellValue("N° Orden");
 		header.createCell(7).setCellValue("Fecha");
 
 		int rowNum = 1;
 
-		CreationHelper createHelperMoney = workbook.getCreationHelper();
-		CellStyle dateStyle = workbook.createCellStyle();
-		dateStyle.setDataFormat(createHelperMoney.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss"));
-
 		CreationHelper createHelper = workbook.getCreationHelper();
+
+		CellStyle dateStyle = workbook.createCellStyle();
+		dateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss"));
+
 		CellStyle currencyStyle = workbook.createCellStyle();
 		currencyStyle.setDataFormat(createHelper.createDataFormat().getFormat("\"USD\" #,##0.00"));
 
@@ -64,47 +64,60 @@ public class ExcelReportService {
 
 					Row row = sheet.createRow(rowNum++);
 
-					row.createCell(0).setCellValue(customer.getCc());
-					row.createCell(1).setCellValue(customer.getDocumentType());
-					row.createCell(2).setCellValue(customer.getName());
-					row.createCell(3).setCellValue(customer.getEmail());
-					row.createCell(4).setCellValue(customer.getPhone());
+					row.createCell(0).setCellValue(customer.getCc() != null ? customer.getCc() : "");
+					row.createCell(1).setCellValue(customer.getDocumentType() != null ? customer.getDocumentType() : "");
+					row.createCell(2).setCellValue(customer.getName() != null ? customer.getName() : "");
+					row.createCell(3).setCellValue(customer.getEmail() != null ? customer.getEmail() : "");
+					row.createCell(4).setCellValue(customer.getPhone() != null ? customer.getPhone() : "");
 
-					row.createCell(5).setCellValue(tx.getId());
+					Cell amountCell = row.createCell(5);
 
-					Cell amountCell = row.createCell(6);
-					amountCell.setCellValue(tx.getBilling().getTotal());
-					amountCell.setCellStyle(currencyStyle);					
-					row.createCell(7).setCellValue(tx.getOrderId());
+					if (tx.getBilling() != null) {
 
-					Cell dateCell = row.createCell(8);
-					dateCell.setCellValue(tx.getPaymentDate());
-					dateCell.setCellStyle(dateStyle);
+						amountCell.setCellValue(tx.getBilling().getTotal());
+						amountCell.setCellStyle(currencyStyle);
+
+					} else {
+						amountCell.setCellValue(0);
+					}
+
+					row.createCell(6).setCellValue(tx.getOrderId() != null ? tx.getOrderId() : "");
+
+					Cell dateCell = row.createCell(7);
+
+					if (tx.getPaymentDate() != null) {
+
+						dateCell.setCellValue(tx.getPaymentDate());
+						dateCell.setCellStyle(dateStyle);
+
+					} else {
+						dateCell.setCellValue("");
+					}
 				}
 
 			} else {
 
 				Row row = sheet.createRow(rowNum++);
 
-				row.createCell(0).setCellValue(customer.getCc());
-				row.createCell(1).setCellValue(customer.getDocumentType());
-				row.createCell(2).setCellValue(customer.getName());
-				row.createCell(3).setCellValue(customer.getEmail());
-				row.createCell(4).setCellValue(customer.getPhone());
-				row.createCell(5).setCellValue(customer.getRole());
+				row.createCell(0).setCellValue(customer.getCc() != null ? customer.getCc() : "");
+				row.createCell(1).setCellValue(customer.getDocumentType() != null ? customer.getDocumentType() : "");
+				row.createCell(2).setCellValue(customer.getName() != null ? customer.getName() : "");
+				row.createCell(3).setCellValue(customer.getEmail() != null ? customer.getEmail() : "");
+				row.createCell(4).setCellValue(customer.getPhone() != null ? customer.getPhone() : "");
 			}
 		}
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 8; i++) {
 			sheet.autoSizeColumn(i);
 		}
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
 		workbook.write(outputStream);
 		workbook.close();
 
 		log.info("Termina proceso de creación de reporte");
+
 		return outputStream.toByteArray();
 	}
-
 }
