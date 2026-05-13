@@ -2,6 +2,7 @@ package co.com.periferia.payment.yappy.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,11 +27,11 @@ public class ExcelReportService {
 
 	private final CustomerYappyService customerYappyService;
 
-	public byte[] generateExcel() throws IOException {
+	public byte[] generateExcel(String status, LocalDateTime startDate, LocalDateTime endDate) throws IOException {
 
 		log.info("Se inicia proceso de creación de reporte");
 
-		List<CustomerYampyEntity> customers = customerYappyService.getdataUserAdmin();
+		List<CustomerYampyEntity> customers = customerYappyService.getdataUserAdmin(status, startDate, endDate);
 
 		Workbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet("Reporte Clientes");
@@ -44,7 +45,10 @@ public class ExcelReportService {
 		header.createCell(4).setCellValue("Telefono");
 		header.createCell(5).setCellValue("Monto");
 		header.createCell(6).setCellValue("N° Orden");
-		header.createCell(7).setCellValue("Fecha");
+		header.createCell(7).setCellValue("Fecha de Pago");
+		header.createCell(8).setCellValue("Medio de Pago");
+		header.createCell(9).setCellValue("Estado de Transacción");
+		header.createCell(10).setCellValue("Descripción");
 
 		int rowNum = 1;
 
@@ -82,8 +86,8 @@ public class ExcelReportService {
 					}
 
 					row.createCell(6).setCellValue(tx.getOrderId() != null ? tx.getOrderId() : "");
-
 					Cell dateCell = row.createCell(7);
+
 
 					if (tx.getPaymentDate() != null) {
 
@@ -93,6 +97,10 @@ public class ExcelReportService {
 					} else {
 						dateCell.setCellValue("");
 					}
+
+					row.createCell(8).setCellValue(tx.getPaymentMeans() != null ? tx.getPaymentMeans() : "");
+					row.createCell(9).setCellValue(tx.getStatus() != null ? tx.getStatus() : "");
+					row.createCell(10).setCellValue(tx.getDescription() != null ? tx.getDescription() : "");
 				}
 
 			} else {
@@ -107,7 +115,7 @@ public class ExcelReportService {
 			}
 		}
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 11; i++) {
 			sheet.autoSizeColumn(i);
 		}
 

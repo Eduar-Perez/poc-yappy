@@ -1,5 +1,6 @@
 package co.com.periferia.payment.yappy.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +52,11 @@ public class CustomYappyServiceImpl implements CustomerYappyService {
 	}
 
 	@Override
-	public List<CustomerYampyEntity> getdataUserAdmin() {
+	public List<CustomerYampyEntity> getdataUserAdmin(String status, LocalDateTime startDate, LocalDateTime endDate) {
 		log.info("Iniciando consulta de datos para administrador total");
 
 		List<CustomerYampyEntity> allDataTx = new ArrayList<>();
-		allDataTx = customerYappyRepository.getAllUsers().get();
+		allDataTx = customerYappyRepository.getAllUsers(status, startDate, endDate);
 
 		log.info("Se consulta los datos para administrador total");
 

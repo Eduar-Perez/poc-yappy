@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import co.com.periferia.payment.yappy.dto.request.RequestReportDTO;
 import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
 import co.com.periferia.payment.yappy.service.CustomerYappyService;
 import co.com.periferia.payment.yappy.service.impl.ExcelReportService;
@@ -36,10 +37,10 @@ public class CustomerController {
 	}
 
 	@PostMapping("/generar-report")
-	public ResponseEntity<byte[]> generarExcel() throws IOException {
+	public ResponseEntity<byte[]> generarExcel(@RequestBody RequestReportDTO request) throws IOException {
 		log.info("Solicitud recibida para generar excel");
 
-		byte[] excel = excelReportService.generateExcel();
+		byte[] excel = excelReportService.generateExcel(request.getStatus(), request.getStartDate(), request.getEndDate());
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))

@@ -1,5 +1,6 @@
 package co.com.periferia.payment.yappy.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,9 +20,16 @@ public interface CustomerYappyRepository extends JpaRepository<CustomerYampyEnti
 			+ "WHERE c.cc = :cc")
 	Optional<CustomerYampyEntity> getCustomer(@Param("cc") String cc);
 
-	@Query(value = "SELECT c FROM CustomerYampyEntity c "
+	@Query("SELECT DISTINCT c FROM CustomerYampyEntity c "
 			+ "LEFT JOIN FETCH c.tx t "
-			+ "LEFT JOIN FETCH t.billing b ")
-	Optional<List<CustomerYampyEntity>> getAllUsers();
+			+ "LEFT JOIN FETCH t.billing b "
+			+ "WHERE (:status IS NULL OR t.status = :status) "
+			+ "AND (CAST(:startDate AS timestamp) "
+			+ "IS NULL OR t.paymentDate >= :startDate) "
+			+ "AND (CAST(:endDate AS timestamp) IS NULL OR t.paymentDate <= :endDate)")
+		List<CustomerYampyEntity> getAllUsers(
+		        @Param("status") String status,
+		        @Param("startDate") LocalDateTime startDate,
+		        @Param("endDate") LocalDateTime endDate);
 }
 
