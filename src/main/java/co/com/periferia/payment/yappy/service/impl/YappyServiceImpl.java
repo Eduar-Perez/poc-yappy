@@ -108,22 +108,20 @@ public class YappyServiceImpl implements YappyService {
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		log.info("Se termina consumo de API yappy de crear la orden");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = mapper.readTree(response.body());
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
 
 			txService.createTx(cc, orderId, total, description, paymentsMeans);
-
-			ObjectMapper mapper = new ObjectMapper();
-
-			JsonNode jsonNode = mapper.readTree(response.body());
 
 			((com.fasterxml.jackson.databind.node.ObjectNode) jsonNode).put("orderId", orderId);
 
 			return mapper.writeValueAsString(jsonNode);
 		} else {
 
-			throw new RuntimeException("Error al crear orden: " +
-					response.statusCode());
+			return mapper.writeValueAsString(jsonNode);
 		}
 
 	}
