@@ -1,0 +1,41 @@
+# Un servicio es una pieza de mi app la cual se va a ejecutar con un comando y tiene toda la configuración para el contenedor
+services:
+  # Se coloca el nombre con el que queremos bautizar a nuestro servicio.
+  yappy:
+    # El build . quiere decir que va a construir una imagen buscándola en el archivo dockerfile de la misma ruta (.)
+    build: .
+    # Definimos el nombre del contenedor para una búsqueda más rápida
+    container_name: container-yappy
+    # Definimos el puerto en el que correrá la app
+    ports:
+      - "8080:8080"
+    # Creamos las variables de entorno que necesita la app
+    environment:
+      # El ambiente que quiero levantar
+      SPRING_PROFILES_ACTIVE: docker
+      # Variables para DB
+      DB_URL: jdbc:postgresql://postgres:5432/yappy_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+    # Esto asegura que postgres levante antes de la app
+    depends_on:
+      - postgres			
+  postgres: 
+    # Le decimos que busque y descargue una imagen llamada postgres en su versión :17
+    image: postgres:17
+    # Definimos el nombre del contenedor de la base de datos
+    container_name: container-postgres
+    # Puerto para levantar postgres
+    ports:
+      - "5432:5432"
+    # Variables de entorno obligatorias para postgres
+    environment:
+      POSTGRES_DB: yappy_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+	#Registramos un volumen
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+#Creamos el volumen con el mismo nombre que lleva en el services
+volumes:
+  postgres_data:	  
