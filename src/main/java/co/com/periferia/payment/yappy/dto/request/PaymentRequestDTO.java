@@ -9,7 +9,9 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class PaymentRequestDTO {
 
-	private String orderId;
+	private String cc;
 	private double total;
+	private String description;
+	private String paymentMeans;
 
 }

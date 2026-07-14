@@ -1,26 +1,30 @@
 package co.com.periferia.payment.yappy.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import co.com.periferia.payment.yappy.dto.CustomerYappyMapper;
-import co.com.periferia.payment.yappy.dto.response.UserYappyResponseDTO;
+import co.com.periferia.payment.yappy.dto.response.CustomerPaymentResponseDTO;
 import co.com.periferia.payment.yappy.entity.CustomerYampyEntity;
+import co.com.periferia.payment.yappy.mapper.CustomerYappyMapper;
 import co.com.periferia.payment.yappy.repository.CustomerYappyRepository;
-import co.com.periferia.payment.yappy.service.CustomYappyService;
+import co.com.periferia.payment.yappy.service.CustomerYappyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CustomYappyServiceImpl implements CustomYappyService{
+public class CustomYappyServiceImpl implements CustomerYappyService {
 
 	private final CustomerYappyRepository customerYappyRepository;
+	private final CustomerYappyMapper customerYappyMapper = new CustomerYappyMapper();
 
 	@Override
-	public UserYappyResponseDTO getCustomer(String cc) {
+	public CustomerPaymentResponseDTO getCustomer(String cc) {
 		log.info("Iniciando consulta del cliente. CC={}", cc);
 
 		try {
@@ -28,16 +32,14 @@ public class CustomYappyServiceImpl implements CustomYappyService{
 
 			if (customerOpt.isEmpty()) {
 				log.warn("No se encontró el cliente con CC={}", cc);
-
-				throw new RuntimeException("Cliente no encontrado: " + cc);
+				throw new Exception("El usuario ingresado no se encuentra registrado con CC: {}" + cc);
 			}
 
 			CustomerYampyEntity customer = customerOpt.get();
 
-			log.info("Cliente encontrado correctamente. CC={}, Nombre={}", customer.getCc(),customer.getName());
+			log.info("Cliente encontrado correctamente. {}", customer.getCc());
 
-			UserYappyResponseDTO response = CustomerYappyMapper.toDto(customer);
-
+			CustomerPaymentResponseDTO response = customerYappyMapper.toDto(customer);
 			log.info("Transformación a DTO completada exitosamente para CC={}", cc);
 
 			return response;
@@ -47,6 +49,18 @@ public class CustomYappyServiceImpl implements CustomYappyService{
 
 			throw new RuntimeException("Error al obtener la información del cliente: " + cc, e);
 		}
+	}
+
+	@Override
+	public List<CustomerYampyEntity> getdataUserAdmin(String status, LocalDateTime startDate, LocalDateTime endDate) {
+		log.info("Iniciando consulta de datos para administrador total");
+
+		List<CustomerYampyEntity> allDataTx = new ArrayList<>();
+		allDataTx = customerYappyRepository.getAllUsers(status, startDate, endDate);
+
+		log.info("Se consulta los datos para administrador total");
+
+		return allDataTx;
 	}
 
 }

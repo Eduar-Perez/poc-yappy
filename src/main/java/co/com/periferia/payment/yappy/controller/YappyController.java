@@ -4,8 +4,6 @@ import co.com.periferia.payment.yappy.dto.request.PaymentRequestDTO;
 import co.com.periferia.payment.yappy.service.impl.YappyServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +22,11 @@ public class YappyController {
 	}
 
 	@PostMapping("/createPayment")
-	public ResponseEntity<?> createPayment(@RequestBody PaymentRequestDTO request) throws IOException, InterruptedException {
+	public ResponseEntity<?> createPayment(@RequestBody PaymentRequestDTO request) throws Exception {
 		log.info("Ingresa a crear orden en el controlador");
 
 		String token = yappyServiceImpl.getAutorizathionToken();
-		String response = yappyServiceImpl.createOrdenPayment(token, request.getOrderId(), request.getTotal());
+		String response = yappyServiceImpl.createOrdenPayment(token, request.getTotal(), request.getCc(), request.getDescription(), request.getPaymentMeans());
 
 		return ResponseEntity.ok(response);
 	}
