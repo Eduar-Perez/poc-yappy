@@ -32,7 +32,7 @@ public class TxServiceImpl implements TxService {
 	private final BillingService billingService;
 	private final CustomerYappyRepository customerYappyRepository;
 
-	@Value("${yappy.ipnUrl}")
+	@Value("${yappy.ipn_url}")
 	private String ipnUrl;
 
 	@Override

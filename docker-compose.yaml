@@ -17,17 +17,18 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-	  #Variables para yappy 
+      #Variables para yappy 
       MERCHANT_ID: ${MERCHANT_ID}
       SECRET_KEY: ${SECRET_KEY}
       BASE_URL: ${BASE_URL}
       ENDPOINT_TOKEN: ${ENDPOINT_TOKEN}
       ENDPOINT_ORDER: ${ENDPOINT_ORDER}
       WEBHOOK_URL: ${WEBHOOK_URL}
+      IPN_URL: ${IPN_URL}
+      DOMAIN: ${DOMAIN}
     # Esto asegura que postgres se conecte y descargue, antes de la app
     depends_on:
-      - postgres
-	  
+      - postgres	  
   postgres: 
     # Le decimos que busque y descargue una imagen llamada postgres en su versión :17
     image: postgres:17
@@ -41,7 +42,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-	#Registramos un volumen
+    #Registramos un volumen
     volumes:
       - postgres_data:/var/lib/postgresql/data
 #Creamos el volumen con el mismo nombre que lleva en el services
