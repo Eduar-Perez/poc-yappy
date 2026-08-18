@@ -25,7 +25,7 @@ public class CustomYappyServiceImpl implements CustomerYappyService {
 
 	@Override
 	public CustomerPaymentResponseDTO getCustomer(String cc) {
-		log.info("Iniciando consulta del cliente. CC={}", cc);
+		log.info("Consultando cliente. CC={}", cc);
 
 		try {
 			Optional<CustomerYampyEntity> customerOpt = customerYappyRepository.getCustomer(cc);
@@ -37,28 +37,24 @@ public class CustomYappyServiceImpl implements CustomerYappyService {
 
 			CustomerYampyEntity customer = customerOpt.get();
 
-			log.info("Cliente encontrado correctamente. {}", customer.getCc());
-
 			CustomerPaymentResponseDTO response = customerYappyMapper.toDto(customer);
-			log.info("Transformación a DTO completada exitosamente para CC={}", cc);
 
 			return response;
 
 		} catch (Exception e) {
 			log.error("Error al consultar el cliente. CC={}, Mensaje={}", cc , e.getMessage(), e);
-
 			throw new RuntimeException("Error al obtener la información del cliente: " + cc, e);
 		}
 	}
 
 	@Override
 	public List<CustomerYampyEntity> getdataUserAdmin(String status, LocalDateTime startDate, LocalDateTime endDate) {
-		log.info("Iniciando consulta de datos para administrador total");
+		log.info("Consulta de datos para administrador total");
 
 		List<CustomerYampyEntity> allDataTx = new ArrayList<>();
 		allDataTx = customerYappyRepository.getAllUsers(status, startDate, endDate);
 
-		log.info("Se consulta los datos para administrador total");
+		log.info("Termina consulta de datos para administrador total");
 
 		return allDataTx;
 	}

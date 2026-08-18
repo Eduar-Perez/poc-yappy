@@ -29,7 +29,7 @@ public class ExcelReportService {
 
 	public byte[] generateExcel(String status, LocalDateTime startDate, LocalDateTime endDate) throws IOException {
 
-		log.info("Se inicia proceso de creación de reporte");
+		log.info("Inicia proceso de creación de reporte");
 
 		List<CustomerYampyEntity> customers = customerYappyService.getdataUserAdmin(status, startDate, endDate);
 

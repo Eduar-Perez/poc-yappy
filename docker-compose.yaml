@@ -47,4 +47,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
 #Creamos el volumen con el mismo nombre que lleva en el services
 volumes:
-  postgres_data:	  
+  postgres_data:
+#Agregamos un helthcheck para visualilzar la salud de toda la app
+healthcheck:
+  #Se define el comando que el sistema ejecutara periodicamente para verificar la salud
+  #CMD: Ejecuta el comando directamente en el sistema operativo del contenedor
+  #curl: llama a la herramienta de trasnferencia de datos
+  #-f o --fail: se indica a curl que si falla lo haga de manera silenciosa para avisar al servidor que el sistema no está sano
+  #endpoint: dirección a la que se enviará la petición.
+  test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+  #intervalo es el tiempo en que quiero que se verifique el estado de salud
+  interval: 1m
+  #timeout tiempo que se concidera que la app no responderá y falló
+  timeout: 5s
+  #retries es la cantidad de intentos que tomará antes de un down
+  retries: 3
+  #tiempo en arrancar a verificar la salud de la app
+  start_period: 10s

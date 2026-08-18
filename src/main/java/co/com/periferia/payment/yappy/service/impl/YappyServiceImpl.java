@@ -53,13 +53,12 @@ public class YappyServiceImpl implements YappyService {
 
 	@Override
 	public String getAutorizathionToken() throws IOException, InterruptedException {
-		log.info("Ingresa al servicio de crear token de autorización en el service");
 
 		long epochTime = Instant.now().toEpochMilli();
 		String requestBody = 
 				String.format("{\"merchantId\":\"%s\", \"requestDate\":%d}", merchantID, epochTime);
 
-		log.info("Se inicia consumo de API yappy de crear token para la sesión");
+		log.info("Inicia obtención de token servicios YAPPY");
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + endpointToken))
 				.header("Content-Type", "application/json")
@@ -73,28 +72,28 @@ public class YappyServiceImpl implements YappyService {
 				.build();
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		log.info("Se termina consumo de API yappy de crear token para la sesión");
 
 		if(response.statusCode() == 200) {
+			log.info("Termina obtención de token servicios YAPPY con exito");
+			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode json = mapper.readTree(response.body());
 
 			return json.get("token").asText();
 		} else {
-			throw new RuntimeException("Error en validación: " + response.statusCode());
+			throw new RuntimeException("Error obteniendo token de autorización en YAPPY: " + response.statusCode());
 		}
 
 	}
 
 	@Override
 	public String createOrdenPayment(String token, double total, String cc, String description, String paymentsMeans) throws Exception {
-		log.info("Ingresa al servicio de crear orden de pago en el service");
 		String orderId = "ORDER-" + txService.createOrderId();
 
 		String requestBody = String.format("{\"orderId\": \"%s\", \"total\": %.2f, \"currency\": "
 				+ "\"USD\",\"webhookUrl\": \"%s\"}", orderId, total, webHookUrl);
 
-		log.info("Se inicia consumo de API yappy de crear la orden");
+		log.info("Inicia creación de orden servicios YAPPY");
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(baseUrl + endpointOrder))
 				.header("Content-Type","application/json")
@@ -107,15 +106,14 @@ public class YappyServiceImpl implements YappyService {
 				.build();
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		log.info("Se termina consumo de API yappy de crear la orden");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonNode = mapper.readTree(response.body());
 
 		if(response.statusCode() == 200 || response.statusCode() == 201) {
-
+			log.info("Termina creación de orden servicios YAPPY");
+			
 			txService.createTx(cc, orderId, total, description, paymentsMeans);
-
 			((com.fasterxml.jackson.databind.node.ObjectNode) jsonNode).put("orderId", orderId);
 
 			return mapper.writeValueAsString(jsonNode);

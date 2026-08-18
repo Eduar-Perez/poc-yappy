@@ -1,0 +1,36 @@
+#Se usa apiVersion para identificar cual es la versión de kubernetes con la que queremos trabajar ya que existen 2
+apiVersion: apps/v1
+#Usamos el Kind para mencionar que es lo que vamos a hacer en el archivo .yaml
+kind: deployment
+#Agregamos el nombre del deployment
+metadata:
+   name: yappy
+   labels:
+     app: yappy
+#Con el primer spect agregamos una etiqueta que funciona como identificador para el deploy
+spect:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: yappy
+#Identificamos la etiqueta de los pods porque es idependiente que la del deployment
+   template:
+     metadata:
+       labels:
+         app: yappy
+     spect:
+       containers:
+         - name: yappy
+           image: eduarperez/yappy:1.0.2
+           ports:
+             - containerPort: 8080
+# Con el stategy manejamos el rollingUpdate para que en cada despliegue,
+# Se maneje una configuración antes de eliminar y actualizar un pod
+   strategy:
+     type: RollingUptade
+     rollingUpdate:
+       #maxSurge sirve para que al deployment cuantos pods puedo tener de más para el depliegue
+       maxSurge: 1
+	   #maxUnavalible sirve para que el deployment identifique que durante el despliegue no quiero
+	   # perder nigun pod
+       maxUnavalible: 0

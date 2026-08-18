@@ -65,7 +65,7 @@ public class TxServiceImpl implements TxService {
 
 	@Override
 	public TxDTO getTransact(String orderId) {
-		log.info("Ingresa al servicio de consultar transacción en el service: con orderId {}", orderId);
+		log.info("Consulta de transacción con orderId {}", orderId);
 
 		TxYampyEntity tx = txRepository
 				.findTopByOrderIdOrderByPaymentDateDesc(orderId)
@@ -79,7 +79,7 @@ public class TxServiceImpl implements TxService {
 	@Override
 	@Transactional
 	public void updateTx(String orderId, String status) {
-		log.info("Ingresa al servicio de actualizar transacción en el service: con orderId {}", orderId);
+		log.info("Actualizar transacción con orderId {}", orderId);
 
 		Optional<TxYampyEntity> txEntity = txRepository.findTopByOrderIdOrderByPaymentDateDesc(orderId);
 		txEntity.get().setStatus(status);
@@ -104,8 +104,7 @@ public class TxServiceImpl implements TxService {
 	private BillingEntity calculeBilling(double total, BillingEntity billingEntity) throws Exception {
 		BillingEntity billing = new BillingEntity();
 		if(total > billingEntity.getTotal())
-			throw new Exception("No es pisoble crear la orden, el monto a pagar excede el total");
-
+			throw new Exception("No es posible crear la orden, el monto a pagar excede el total");
 
 		double previousTotal = billingEntity != null ? billingEntity.getTotal() : 0;
 
@@ -115,8 +114,6 @@ public class TxServiceImpl implements TxService {
 		billing.setDiscount(billingEntity.getDiscount());
 		billing.setValueMin(billingEntity.getValueMin());
 		billing.setValueMax(billingEntity.getValueMax());
-
-
 
 		return billing;
 
